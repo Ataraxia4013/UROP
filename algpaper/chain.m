@@ -32,4 +32,4 @@ legend('Direct Solution','Solution via Chain Rule',2)
 xlabel('t','FontSize',12) 
 ylabel('V(X)','FontSize',16,'Rotation',0,'HorizontalAlignment','right')
 
-Xdiff = norm(sqrt(Xem1) - Xem2,'inf')
+Xdiff = norm(sqrt(Xem1) - Xem2,'inf');

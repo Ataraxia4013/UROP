@@ -26,4 +26,4 @@ for s = 1:M
 Pricesum = Pricesum + max(0,Xem1-1);
 end
 
-Price = exp(-r)*Pricesum/M
+Price = exp(-r)*Pricesum/M;
