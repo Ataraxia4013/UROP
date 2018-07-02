@@ -1,36 +1,49 @@
+
+function simufunct(delta,a,a0,sigma,N,T,gamma)
 %The code incorporate ideas presented in em.m from Higham paper
+
+%Input Variables
+%sigma : volitility
+%N     : number of time steps
+%T     : Trading Horizon Length
+%gamma : Index for utility function (exponential in this case)
+
+%dW: Brownian increments
 randn('state',100)
-
-
-
-delta = [1 1 0]';
-a = [-1 0 1]';
-a0 = 0;
-sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
-T = 1;
-N = 2^8;
-gamma = 0.6;
-
 dt = T/N;
 Yzero = transpose([11.10 12.00 11.00]);
 dW = sqrt(dt)*randn(3,N);
 
+
+%Terms involved in the ornstein-urenbeck process (mean reversion)
 omega = sigma*sigma';
 kappa = -1 * delta' * a;
-A = diag(a);
+A     = diag(a);
 theta = trace(A*omega)/(2*delta'*a);
+                          
 
 
-R = 1;
+%R :Step coefficient for Euler-Maruyama Method
+%L :Steps in Euler-Maruyama Method
+%Dt:Upgraded time step
+R  = 1;
 Dt = R*dt;
-L = N/R;
+L  = N/R;
 
-Yem = zeros(3,L);
-alphaem = zeros(1,L);
-Ytemp = Yzero;
-alphatemp = a0 + a'*log(Ytemp);
-piem = zeros(3,L);
-wealthem = zeros(1,L);
+
+%Yem        : Set of Asset Values in one Trading Horizon
+%Ytemp      : Stepwise Asset Value
+%alphaem    : Set of Co-integration Factors in one Trading Horizon
+%alphatemp  : Stepwise Co-integration Factor
+%piem       : Set of Positions in one Trading Horizon
+%wealthem   : Set of Wealth of Trader in one Trading Horizon
+%wealthtemp : Stepwise Wealth of Trader
+Yem        = zeros(3,L);
+Ytemp      = Yzero;
+alphaem    = zeros(1,L);
+alphatemp  = a0 + a'*log(Ytemp);
+piem       = zeros(3,L);
+wealthem   = zeros(1,L);
 wealthtemp = [0 0 0]';
 
 for j = 1:L
@@ -76,3 +89,8 @@ subplot(2,2,4)
 plot([0:Dt:T],[0,wealthem])
 xlabel('Time','FontSize',12)
 ylabel('Wealth','FontSize',12,'Rotation',90)
+
+end
+
+
+
