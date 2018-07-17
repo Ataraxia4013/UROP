@@ -14,6 +14,7 @@ sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
 T = 1;
 N = 2^8;
 gamma = 0.6;
+Yzero = transpose([11.10 12.00 11.00]);
 
 %run the main function
-simufunct(delta,a,a0,sigma,N,T,gamma)
+simufunct(Yzero,delta,a,a0,sigma,N,T,gamma)

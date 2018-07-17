@@ -1,8 +1,9 @@
 
-function simufunct(delta,a,a0,sigma,N,T,gamma)
+function simufunct(Yzero,delta,a,a0,sigma,N,T,gamma)
 %The code incorporate ideas presented in em.m from Higham paper
 
 %Input Variables
+%Yzero : Initial Asset Price 
 %sigma : volitility
 %N     : number of time steps
 %T     : Trading Horizon Length
@@ -11,7 +12,6 @@ function simufunct(delta,a,a0,sigma,N,T,gamma)
 %dW: Brownian increments
 randn('state',100)
 dt = T/N;
-Yzero = transpose([11.10 12.00 11.00]);
 dW = sqrt(dt)*randn(3,N);
 
 

@@ -8,7 +8,7 @@ a = [-1 0 1]';
 a0 = 0;
 sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
 T = 1;
-N = 2^8;
+N = 2^13;
 gamma = 0.6;
 
 dt = T/N;
@@ -76,3 +76,6 @@ subplot(2,2,4)
 plot([0:Dt:T],[0,wealthem])
 xlabel('Time','FontSize',12)
 ylabel('Wealth','FontSize',12,'Rotation',90)
+
+
+
