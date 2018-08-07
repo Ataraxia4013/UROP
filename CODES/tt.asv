@@ -1,9 +1,0 @@
-
-mo = varm(3,1);
-esmo = estimate(mo,Yem');
-BB = esmo.AR{1,1};
-omg2 = esmo.Covariance;
-sisi = chol(omg2);
-si = (BB^(-1))*sisi;
-omg = si'*si;
-cc = 
