@@ -1,7 +1,7 @@
 %The code incorporate ideas presented in em.m from Higham paper
 randn('state',100)
 
-
+clear
 delta = [1 1 0]';
 a = [-1 0 1]';
 a0 = 0;
@@ -103,24 +103,37 @@ plot([0:Dt:T],aem)
 xlabel('Time','FontSize',12)
 ylabel('aem','FontSize',12,'Rotation',90)
 
-mo = varm(3,1);
-esmo = estimate(mo,log(Yem'));
-BB = esmo.AR{1,1};
-omg2 = esmo.Covariance;
-sisi = chol(omg2);
-binv = (BB^(-1));
-si = binv*sisi';
-omg = si*si'/Dt;
-%pom = omg.*(mean(Yem,2)*mean(Yem,2)');
-lol = chol(omg);
+[omg,loomg,ek,uk,uuk] = VARMOD(Yem,Dt);
 
-kpii = binv*(eye(3)-BB)/Dt;
-[uk,ek] = eig(kpii);
-uuk = uk^-1;
-ss = uuk * log(Yem);
+if all(imag(diag(ek)) == 0)
+    for k = 1:length(uk(1,:))
+        if all(abs(ek(k,k)) >= abs(diag(ek))) == 1
+            disp('real');
+            disp(k);
+            sluk = uuk(k,:);
+            ST = uuk(k,:)*Yem;
+        end
+    end
+else
+    for l = 1:length(uk(1,:))
+        if all((imag(uuk(l,:)))==0) == 1
+            disp('imag');
+            disp(l);
+            sluk = uuk(l,:);
+            ST = uuk(l,:)*Yem;
+        end
+    end
+end
 
-cc = binv * esmo.Constant/ Dt;
-BOI = (binv*(eye(3)-BB))/Dt;
-var = diag(omg);
+varstd = 0;
 
-%AAPL,INTC,QCOM
+for stdnb1 = 1:length(sluk)
+    for stdnb2 = 1:length(sluk)
+        varstd = varstd + sluk(stdnb1)*sluk(stdnb2)*omg(stdnb1,stdnb2);
+    end
+end
+std = sqrt(varstd);
+
+
+figure
+plot([0:Dt:T],ST);
