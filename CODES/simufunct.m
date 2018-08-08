@@ -1,5 +1,5 @@
 
-function simufunct(Yzero,delta,a,a0,sigma,N,T,gamma)
+function [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T,gamma)
 %The code incorporate ideas presented in em.m from Higham paper
 
 %Input Variables
@@ -26,7 +26,7 @@ theta = trace(A*omega)/(2*delta'*a);
 %R :Step coefficient for Euler-Maruyama Method
 %L :Steps in Euler-Maruyama Method
 %Dt:Upgraded time step
-R  = 1;
+R  = 4;
 Dt = R*dt;
 L  = N/R;
 
@@ -40,6 +40,7 @@ L  = N/R;
 %wealthtemp : Stepwise Wealth of Trader
 Yem        = zeros(3,L);
 Ytemp      = Yzero;
+Yem(:,1)   = Yzero;
 
 alphaem    = zeros(1,L);
 alphatemp  = a0 + a'*log(Ytemp);
@@ -55,14 +56,14 @@ wealthem(1)= 0;
 for j = 1:L
     Winc       = sum(dW(:,R*(j-1)+1:R*j),2);
     
-    Ytemp      = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
-    pitemp     = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
-    wealthtemp = wealthtemp + pitemp.*((Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc)./Ytemp;
-    alphatemp  = a0 + a'*log(Ytemp);
-    Yem(:,j)   = Ytemp;
-    alphaem(j) = alphatemp;
-    piem(:,j)  = pitemp;
-    wealthem(j)= sum(wealthtemp);
+    Ytemp        = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
+    pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
+    wealthtemp   = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
+    alphatemp    = a0 + a'*log(Ytemp);
+    Yem(:,j+1)   = Ytemp;
+    alphaem(j+1) = alphatemp;
+    piem(:,j+1)  = pitemp;
+    wealthem(j+1)= sum(wealthtemp);
 end
 
 %wealth = sum(abs(piem),1);
@@ -71,7 +72,7 @@ figure
 
 subplot(2,2,1)
 for l = 1:3
-    plot([0:Dt:T],[Yem(l,:)]),hold on
+    plot([0:Dt:T],Yem(l,:)),hold on
 end
 hold off
 xlabel('Time','FontSize',12)

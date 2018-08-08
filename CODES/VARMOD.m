@@ -1,4 +1,4 @@
-function [omg,loomg,ek,uk,uuk] = VARMOD(Yem,Dt)
+function [omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt)
 %lomo  : var model initiation 
 %eslomo: log var model estimation 
 %loBB  : B of Yt = A + B*Yt-1 + noise
@@ -53,4 +53,32 @@ uuk = uk^-1;
 mm = (eye(3)-BB)^(-1) * esmo.Constant;
 
 var = diag(omg);
+
+if all(imag(diag(ek)) == 0)
+    disp('real');
+    for k = 1:length(uk(1,:))
+        if all(abs(ek(k,k)) >= abs(diag(ek))) == 1
+            disp(k);
+            sluk = uuk(k,:);
+        end
+    end
+else
+    disp('imag');
+    for l = 1:length(uk(1,:))
+        if all((imag(uuk(l,:)))<1.0e-7) == 1
+            disp(l);
+            sluk = uuk(l,:);
+        end
+    end
+end
+
+varstd = 0;
+
+for stdnb1 = 1:length(sluk)
+    for stdnb2 = 1:length(sluk)
+        varstd = varstd + sluk(stdnb1)*sluk(stdnb2)*loomg(stdnb1,stdnb2);
+    end
+end
+std = sqrt(varstd);
+
 end

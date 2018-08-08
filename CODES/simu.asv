@@ -1,5 +1,5 @@
 %The code incorporate ideas presented in em.m from Higham paper
-%randn('state',100)
+randn('state',100)
 
 clear
 delta = [1 1 0]';
@@ -93,6 +93,12 @@ ylabel('Wealth1','FontSize',12,'Rotation',90)
 
 figure
 
+plot([0:Dt:T],cumsum(sum(abs(piem),1)));
+xlabel('Time','FontSize',12)
+ylabel('Wealth2','FontSize',12,'Rotation',90)
+
+figure
+
 plot([0:Dt:T],aem)
 xlabel('Time','FontSize',12)
 ylabel('aem','FontSize',12,'Rotation',90)
@@ -100,19 +106,21 @@ ylabel('aem','FontSize',12,'Rotation',90)
 [omg,loomg,ek,uk,uuk,mm] = VARMOD(Yem,Dt);
 
 if all(imag(diag(ek)) == 0)
-    disp('real');
     for k = 1:length(uk(1,:))
         if all(abs(ek(k,k)) >= abs(diag(ek))) == 1
+            disp('real');
             disp(k);
             sluk = uuk(k,:);
+            ST = uuk(k,:)*Yem;
         end
     end
 else
-    disp('imag');
     for l = 1:length(uk(1,:))
-        if all((imag(uuk(l,:)))<1.0e-7) == 1
+        if all((imag(uuk(l,:)))==0) == 1
+            disp('imag');
             disp(l);
             sluk = uuk(l,:);
+            ST = uuk(l,:)*Yem;
         end
     end
 end
@@ -126,4 +134,50 @@ for stdnb1 = 1:length(sluk)
 end
 std = sqrt(varstd);
 
-EXPATRAD(sluk,Yem,mm,std,L,Dt,T)
+beta = 0;
+bbeta = zeros(1,L);
+bbeta(1) = 0;
+Wtt = zeros(1,L);
+Wtt(1) = 0;
+Wt = 0;
+cash = 0;
+for lll = 1:L
+    ytemp = Yem(:,lll);
+    ycoi = sluk*ytemp;
+    Wt = cash + beta * ycoi;
+    if ycoi >= sluk*mm+std && beta == 0
+        beta = 1;
+        ytempl = ytemp;
+        Wt = ycoi;        
+    elseif ycoi <=sluk*mm-std && beta == 0
+        beta = -1;
+        ytemps = ytemp;
+        Wt = - ycoi;
+    elseif ycoi <= sluk*mm+ 0.1*std && beta == 1
+        beta =0 ;
+        cash = beta * sluk*cash = beta * sluk(ycoi - ytempl);
+    elseif ycoi>= sluk*mm-0.1*std && beta == -1
+        cash = beta * sluk*(ycoi - ytemps);
+        beta =0;
+    end
+    Wtt(lll+1) = Wt;
+    bbeta(lll+1) = beta;
+end
+
+figure
+plot([0:Dt:T],Wtt);
+xlabel('wtt','FontSize',12)
+figure
+yyaxis right
+plot([0:Dt:T],bbeta),hold on
+yyaxis left
+plot([0:Dt:T],sluk*Yem),hold on
+xlabel('slukyem','FontSize',12)
+sdp = ones(1,L+1)*(sluk*mm+std);
+sdm = ones(1,L+1)*(sluk*mm-std);
+sdpp = ones(1,L+1)*(sluk*mm+0.1*std);
+sdmm = ones(1,L+1)*(sluk*mm-0.1*std);
+plot([0:Dt:T],sdp,'-'),hold on
+plot([0:Dt:T],sdm,'-'),hold on
+plot([0:Dt:T],sdpp,'-'),hold on
+plot([0:Dt:T],sdmm,'-'),hold off
