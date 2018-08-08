@@ -6,9 +6,8 @@
 %T     : Trading Horizon Length
 %gamma : Index for utility function (exponential in this case)
 %Yzero : Initial Value of Asset Prices
-close all;
-clear;
 
+clear;
 delta = [1 1 0]';
 a = [-1 0 1]';
 a0 = 0;
@@ -18,11 +17,10 @@ N = 2^13;
 gamma = 0.6;
 Yzero = transpose([11.10 12.00 11.00]);
 
-%the main function on simulating Yem
+%run the main function on simulating Yem
 [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T,gamma);
-%the VAR modeling function to give estimates of parametres
+%run the VAR modeling function to give estimates of parametres
 [omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt);
-%the function for old style pairs trading 
-[Wtt,bbeta] = EXPATRAD(sluk,Yem,mm,std,L);
-%the function for plotting nice graphs
-PLOT(Yem,Dt,T,alphaem,piem,wealthem,sluk,std,mm,Wtt,bbeta,L);
+%run then function for old style pairs trading 
+EXPATRAD(sluk,Yem,mm,std,L,Dt,T)
+p
