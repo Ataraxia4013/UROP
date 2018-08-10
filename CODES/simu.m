@@ -1,5 +1,5 @@
 %The code incorporate ideas presented in em.m from Higham paper
-randn('state',100)
+%randn('state',100)
 
 clear
 close all

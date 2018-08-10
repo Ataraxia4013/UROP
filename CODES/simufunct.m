@@ -10,7 +10,7 @@ function [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T
 %gamma : Index for utility function (exponential in this case)
 
 %dW: Brownian increments
-randn('state',100)
+%randn('state',100)
 dt = T/N;
 dW = sqrt(dt)*randn(3,N);
 
