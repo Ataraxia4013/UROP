@@ -2,7 +2,7 @@
 %randn('state',100)
 
 clear
-close all
+%close all
 
 delta = [1 1 0]';
 a = [-1 0 1]';
@@ -36,7 +36,7 @@ abt = alphatemp;
 alphaem(1) = alphatemp;
 aem(1) = abt;
 piem = zeros(3,L);
-piem(:,1) = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*(L*Dt*alphatemp - 0.25*trace(A*omega)*(L*Dt)^2)));
+piem(:,1) = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*(L*Dt*alphatemp - 0.25*trace(A*omega)*(L*Dt)^2)));
 wealthem = zeros(1,L);
 wealthtemp = [0 0 0]';
 wealthem(1) =0 ;
@@ -49,7 +49,7 @@ for j = 1:L
     %end
     Ytemp = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
     %Ytemp = - Ytemp*((Dt*alphatemp)*(delta) + sigma * Winc-1)^-1;
-    pitemp = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
+    pitemp = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
     wealthtemp = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
     %wealthtemp = wealthtemp + sum(pitemp-pip,1);
     abt = abt + kappa*(theta-abt)*Dt+a'*sigma*Winc;
@@ -78,7 +78,7 @@ lolol = chol(loomg);
 lokpii = lobinv*(eye(3)-loBB)/Dt;
 [louk,loek] = eig(lokpii);
 louuk = louk^-1;
-%locc = lobinv * eslomo.Constant/ Dt;
+locc = lobinv * eslomo.Constant/ Dt;
 lovar = diag(loomg);
 
 %AAPL,INTC,QCOM
@@ -146,6 +146,9 @@ cash = 0;
 for lll = 1:L
     ytemp = Yem(:,lll);
     ycoi = sluk*ytemp;
+    if lll == 1
+        ytempl = ytemp;
+    end
     if ycoi >= sluk*mm+std && beta == 0
         beta = -1;
         ytempl = ytemp;     
