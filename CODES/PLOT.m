@@ -2,7 +2,7 @@ function PLOT(Yem,Dt,T,alphaem,piem,wealthem,sluk,std,mm,Wtt,bbeta,L)
 figure
 
 subplot(2,3,1)
-for l = 1:3
+for l = 1:length(Yem(:,1))
     plot([0:Dt:T],[Yem(l,:)]),hold on
 end
 hold off
@@ -16,7 +16,7 @@ xlabel('Time','FontSize',12);
 ylabel('Co-Intergration Factor \alpha','FontSize',12,'Rotation',90);
 
 subplot(2,3,3)
-for k = 1:3
+for k = 1:length(Yem(:,1))
     plot([0:Dt:T],piem(k,:)./Yem(k,:)),hold on
 end
 hold off

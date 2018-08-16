@@ -9,6 +9,9 @@ cash = 0;
 for lll = 1:L
     ytemp = Yem(:,lll);
     ycoi = sluk*ytemp;
+    if lll == 1
+        ytempl = ytemp;
+    end
     if ycoi >= sluk*mm+std && beta == 0
         beta = -1;
         ytempl = ytemp;     

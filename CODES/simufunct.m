@@ -12,7 +12,7 @@ function [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T
 %dW: Brownian increments
 randn('state',100)
 dt = T/N;
-dW = sqrt(dt)*randn(3,N);
+dW = sqrt(dt)*randn(length(Yzero),N);
 
 
 %Terms involved in the ornstein-urenbeck process (mean reversion)
@@ -38,7 +38,7 @@ L  = N/R;
 %piem       : Set of Positions in one Trading Horizon
 %wealthem   : Set of Wealth of Trader in one Trading Horizon
 %wealthtemp : Stepwise Wealth of Trader
-Yem        = zeros(3,L);
+Yem        = zeros(length(Yzero),L);
 Ytemp      = Yzero;
 Yem(:,1)   = Yzero;
 
@@ -46,7 +46,7 @@ alphaem    = zeros(1,L);
 alphatemp  = a0 + a'*log(Ytemp);
 alphaem(1) = alphatemp;
 
-piem       = zeros(3,L);
+piem       = zeros(length(Yzero),L);
 piem(:,1)  = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L)*Dt*alphatemp - 0.25*trace(A*omega)*((L)*Dt)^2)));
 
 wealthem   = zeros(1,L);

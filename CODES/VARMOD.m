@@ -15,7 +15,7 @@ function [omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt)
 %lovar : adjusted variance of data
 
 
-lomo = varm(3,1);
+lomo = varm(length(Yem(:,1)),1);
 eslomo = estimate(lomo,log(Yem'));
 loBB = eslomo.AR{1,1};
 loomg2 = eslomo.Covariance;
@@ -25,7 +25,7 @@ losi = lobinv*losisi';
 loomg = losi*losi'/Dt;
 lolol = chol(loomg);
 
-lokpii = lobinv*(eye(3)-loBB)/Dt;
+lokpii = lobinv*(eye(length(Yem(:,1)))-loBB)/Dt;
 [louk,loek] = eig(lokpii);
 louuk = louk^-1;
 %locc = lobinv * eslomo.Constant/ Dt;
@@ -35,7 +35,7 @@ lovar = diag(loomg);
 
 
 %following variables naming convention follow previous ones without the 'lo'
-mo = varm(3,1);
+mo = varm(length(Yem(:,1)),1);
 esmo = estimate(mo,Yem');
 BB = esmo.AR{1,1};
 omg2 = esmo.Covariance;
@@ -45,12 +45,12 @@ si = binv*sisi';
 omg = si*si'/Dt;
 lol = chol(omg);
 
-kpii = binv*(eye(3)-BB)/Dt;
+kpii = binv*(eye(length(Yem(:,1)))-BB)/Dt;
 [uk,ek] = eig(kpii);
 uuk = uk^-1;
 
 %mm: estimated mean reversion mean
-mm = (eye(3)-BB)^(-1) * esmo.Constant;
+mm = (eye(length(Yem(:,1)))-BB)^(-1) * esmo.Constant;
 
 var = diag(omg);
 
