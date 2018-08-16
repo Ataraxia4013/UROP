@@ -1,8 +1,8 @@
 %The code incorporate ideas presented in em.m from Higham paper
-%randn('state',100)
+randn('state',100)
 
 clear
-%close all
+close all
 
 delta = [1 1 0]';
 a = [-1 0 1]';
@@ -10,7 +10,7 @@ a0 = 0;
 sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
 T = 1;
 N = 2^13;
-gamma = 0.6;
+gamma = 0.1;
 
 dt = T/N;
 Yzero = transpose([11.10 12.00 11.00]);
@@ -36,10 +36,16 @@ abt = alphatemp;
 alphaem(1) = alphatemp;
 aem(1) = abt;
 piem = zeros(3,L);
-piem(:,1) = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*(L*Dt*alphatemp - 0.25*trace(A*omega)*(L*Dt)^2)));
+
+pitemp = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*(L*Dt*alphatemp - 0.25*trace(A*omega)*(L*Dt)^2)));
+piem(:,1) = pitemp;
 wealthem = zeros(1,L);
 wealthtemp = [0 0 0]';
 wealthem(1) =0 ;
+
+possem = zeros(3,L);
+posstemp = pitemp./Ytemp;
+possem(:,1) = posstemp;
 
 for j = 1:L
     Winc = sum(dW(:,R*(j-1)+1:R*j),2);
@@ -48,21 +54,28 @@ for j = 1:L
         %Ytemp(k) = - Ytemp(k)*((Dt*alphatemp)*(delta(k)) + sigma(k,:) * Winc -1)^-1;
     %end
     Ytemp = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
+    alphatemp = a0 + a'*log(Ytemp);
     %Ytemp = - Ytemp*((Dt*alphatemp)*(delta) + sigma * Winc-1)^-1;
     pitemp = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
-    wealthtemp = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
-    %wealthtemp = wealthtemp + sum(pitemp-pip,1);
+    posstemp = pitemp./Ytemp;
+    %wealthtemp = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
+    wealthtemp = wealthtemp + sum(pitemp'*((Ytemp-Yem(:,j))./Ytemp));
     abt = abt + kappa*(theta-abt)*Dt+a'*sigma*Winc;
-    alphatemp = a0 + a'*log(Ytemp);
+    disp(Yem(:,j));
+    disp(Ytemp);
     Yem(:,j+1) = Ytemp;
     alphaem(j+1) = alphatemp;
     aem(j+1) = abt;
     piem(:,j+1) = pitemp;
+    %wealthem(j+1) = sum(wealthtemp);
     wealthem(j+1) = sum(wealthtemp);
+    possem(:,j+1) = posstemp;
 end
 
 %wealth = sum(abs(piem),1);
 
+figure
+plot([0:Dt:T],possem);
 
 
 lomo = varm(3,1);

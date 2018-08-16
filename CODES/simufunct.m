@@ -57,9 +57,9 @@ for j = 1:L
     Winc       = sum(dW(:,R*(j-1)+1:R*j),2);
     
     Ytemp        = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
-    pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
-    wealthtemp   = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
     alphatemp    = a0 + a'*log(Ytemp);
+    pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
+    wealthtemp   = wealthtemp + sum(pitemp'*((Ytemp-Yem(:,j))./Ytemp));
     Yem(:,j+1)   = Ytemp;
     alphaem(j+1) = alphatemp;
     piem(:,j+1)  = pitemp;
