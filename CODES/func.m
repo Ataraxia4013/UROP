@@ -23,6 +23,6 @@ Yzero = transpose([11.10 12.00 11.00]);
 %the VAR modeling function to give estimates of parametres
 [omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt);
 %the function for old style pairs trading 
-[Wtt,bbeta] = EXPATRAD(sluk,Yem,mm,std,L);
+[Wtt,bbeta] = EXPATRAD(sluk,Yem,mm,std);
 %the function for plotting nice graphs
 PLOT(Yem,Dt,T,alphaem,piem,wealthem,sluk,std,mm,Wtt,bbeta,L);

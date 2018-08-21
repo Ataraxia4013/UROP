@@ -10,7 +10,7 @@ function [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T
 %gamma : Index for utility function (exponential in this case)
 
 %dW: Brownian increments
-randn('state',100)
+%randn('state',100)
 dt = T/N;
 dW = sqrt(dt)*randn(length(Yzero),N);
 
@@ -54,8 +54,7 @@ wealthtemp = [0 0 0]';
 wealthem(1)= 0;
 
 for j = 1:L
-    Winc       = sum(dW(:,R*(j-1)+1:R*j),2);
-    
+    Winc         = sum(dW(:,R*(j-1)+1:R*j),2);
     Ytemp        = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
     alphatemp    = a0 + a'*log(Ytemp);
     pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));

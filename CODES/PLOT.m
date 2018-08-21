@@ -46,8 +46,12 @@ sdp = ones(1,L+1)*(sluk*mm+std);
 sdm = ones(1,L+1)*(sluk*mm-std);
 sdpp = ones(1,L+1)*(sluk*mm+0.1*std);
 sdmm = ones(1,L+1)*(sluk*mm-0.1*std);
+sdsll = ones(1,L+1)*(sluk*mm-2*std);
+sdslu = ones(1,L+1)*(sluk*mm+2*std);
 plot([0:Dt:T],sdp,'-'),hold on
 plot([0:Dt:T],sdm,'-'),hold on
 plot([0:Dt:T],sdpp,'-'),hold on
+plot([0:Dt:T],sdsll,'r-'),hold on
+plot([0:Dt:T],sdslu,'r-'),hold on
 plot([0:Dt:T],sdmm,'-'),hold off
 end

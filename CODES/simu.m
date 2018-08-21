@@ -1,5 +1,5 @@
 %The code incorporate ideas presented in em.m from Higham paper
-randn('state',100)
+%randn('state',100)
 
 clear
 close all
@@ -8,9 +8,9 @@ delta = [1 1 0]';
 a = [-1 0 1]';
 a0 = 0;
 sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
-T = 1;
-N = 2^13;
-gamma = 0.1;
+T = 500;
+N = 500;
+gamma = 1;
 
 dt = T/N;
 Yzero = transpose([11.10 12.00 11.00]);
@@ -22,7 +22,7 @@ A = diag(a);
 theta = trace(A*omega)/(2*delta'*a);
 
 
-R = 4;
+R = 5;
 Dt = R*dt;
 L = N/R;
 
@@ -56,13 +56,11 @@ for j = 1:L
     Ytemp = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
     alphatemp = a0 + a'*log(Ytemp);
     %Ytemp = - Ytemp*((Dt*alphatemp)*(delta) + sigma * Winc-1)^-1;
-    pitemp = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
+    pitemp = -(1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*(omega^(-1))*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
     posstemp = pitemp./Ytemp;
     %wealthtemp = wealthtemp + pitemp'*delta*alphatemp*Dt + pitemp'*sigma * Winc;
     wealthtemp = wealthtemp + sum(pitemp'*((Ytemp-Yem(:,j))./Ytemp));
     abt = abt + kappa*(theta-abt)*Dt+a'*sigma*Winc;
-    disp(Yem(:,j));
-    disp(Ytemp);
     Yem(:,j+1) = Ytemp;
     alphaem(j+1) = alphatemp;
     aem(j+1) = abt;
@@ -117,6 +115,27 @@ mm = (eye(3)-BB)^(-1) * esmo.Constant;
 
 var = diag(omg);
 
+if all(imag(diag(loek)) == 0)
+    disp('loreal');
+    for k = 1:length(louk(1,:))
+        if all(abs(loek(k,k)) >= abs(diag(loek))) == 1
+            disp(k);
+            losluk = louuk(k,:);
+        end
+    end
+else
+    disp('loimag');
+    for l = 1:length(louk(1,:))
+        if all((imag(louuk(l,:)))<1.0e-7) == 1
+            disp(l);
+            losluk = louuk(l,:);
+        end
+    end
+end
+
+if all(imag(losluk) < 1.0e-8) == 1
+    losluk = real(losluk);
+end
 
 if all(imag(diag(ek)) == 0)
     disp('real');
