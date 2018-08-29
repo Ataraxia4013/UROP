@@ -21,7 +21,7 @@ Yzero = transpose([11.10 12.00 11.00]);
 %the main function on simulating Yem
 [Yem,piem,alphaem,wealthem,Dt,L] = simufunct(Yzero,delta,a,a0,sigma,N,T,gamma);
 %the VAR modeling function to give estimates of parametres
-[omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt);
+[omg,loomg,ek,uk,uuk,mm,sluk,std,louuk,loek] = VARMOD(Yem,Dt);
 %the function for old style pairs trading 
 [Wtt,bbeta] = EXPATRAD(sluk,Yem,mm,std);
 %the function for plotting nice graphs

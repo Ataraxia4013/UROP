@@ -1,4 +1,4 @@
-function [omg,loomg,ek,uk,uuk,mm,sluk,std] = VARMOD(Yem,Dt)
+function [omg,loomg,ek,uk,uuk,mm,sluk,std,louuk,loek,con,BB,omg2 ] = VARMOD(Yem,Dt)
 %lomo  : var model initiation 
 %eslomo: log var model estimation 
 %loBB  : B of Yt = A + B*Yt-1 + noise
@@ -20,16 +20,13 @@ eslomo = estimate(lomo,log(Yem'));
 loBB = eslomo.AR{1,1};
 loomg2 = eslomo.Covariance;
 losisi = chol(loomg2);
-lobinv = (loBB^(-1));
-losi = lobinv*losisi';
+losi = losisi';
 loomg = losi*losi'/Dt;
-lolol = chol(loomg);
 
-lokpii = lobinv*(eye(length(Yem(:,1)))-loBB)/Dt;
+lokpii = (eye(length(Yem(:,1)))-loBB)/Dt;
 [louk,loek] = eig(lokpii);
 louuk = louk^-1;
 %locc = lobinv * eslomo.Constant/ Dt;
-lovar = diag(loomg);
 
 %AAPL,INTC,QCOM
 
@@ -40,19 +37,17 @@ esmo = estimate(mo,Yem');
 BB = esmo.AR{1,1};
 omg2 = esmo.Covariance;
 sisi = chol(omg2);
-binv = (BB^(-1));
-si = binv*sisi';
+si = sisi';
 omg = si*si'/Dt;
-lol = chol(omg);
+con = esmo.Constant;
 
-kpii = binv*(eye(length(Yem(:,1)))-BB)/Dt;
+kpii = (eye(length(Yem(:,1)))-BB)/Dt;
 [uk,ek] = eig(kpii);
 uuk = uk^-1;
 
 %mm: estimated mean reversion mean
-mm = (eye(length(Yem(:,1)))-BB)^(-1) * esmo.Constant;
+mm = (eye(length(Yem(:,1)))-BB)^(-1) * con;
 
-var = diag(omg);
 
 if all(imag(diag(ek)) == 0)
     disp('real');

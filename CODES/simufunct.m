@@ -47,7 +47,7 @@ alphatemp  = a0 + a'*log(Ytemp);
 alphaem(1) = alphatemp;
 
 piem       = zeros(length(Yzero),L);
-piem(:,1)  = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L)*Dt*alphatemp - 0.25*trace(A*omega)*((L)*Dt)^2)));
+piem(:,1)  = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega^(-1)*delta)*((L)*Dt*alphatemp - 0.25*trace(A*omega)*((L)*Dt)^2)));
 
 wealthem   = zeros(1,L);
 wealthtemp = [0 0 0]';
@@ -57,8 +57,8 @@ for j = 1:L
     Winc         = sum(dW(:,R*(j-1)+1:R*j),2);
     Ytemp        = Ytemp + (Dt*alphatemp)*(delta.*Ytemp) + sigma * Winc.*Ytemp;
     alphatemp    = a0 + a'*log(Ytemp);
-    pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
-    wealthtemp   = wealthtemp + sum(pitemp'*((Ytemp-Yem(:,j))./Ytemp));
+    pitemp       = (1/gamma)*(((omega^(-1))*delta)*alphatemp - a*((delta'*omega^(-1)*delta)*((L-j)*Dt*alphatemp - 0.25*trace(A*omega)*((L-j)*Dt)^2)));
+    wealthtemp   = wealthtemp + (-1) *sum(pitemp'*((Ytemp-Yem(:,j))./Yem(:,j)));
     Yem(:,j+1)   = Ytemp;
     alphaem(j+1) = alphatemp;
     piem(:,j+1)  = pitemp;

@@ -1,0 +1,2 @@
+food retail,packed:24,10,41
+semiconductors:35,43,44

@@ -1,7 +1,21 @@
 function PLPA(sluk,mm,std,Wtt,bbeta,Yem)
 L = length(Yem);
+ls = length(sluk);
 figure
-subplot(2,1,1)
+
+
+for i = 1:length(Yem(:,1))
+    subplot(4,1,i)
+    yyaxis right
+    plot(1:L,bbeta*sluk(i)),hold on
+    ylabel('Position','FontSize',12,'Rotation',90);
+    yyaxis left
+    plot(1:L,Yem(i,:));
+    xlabel('Time','FontSize',12)
+    ylabel('Original Price','FontSize',12,'Rotation',90);
+end
+
+subplot(4,1,i+1)
 yyaxis right
 plot(1:L,bbeta),hold on
 ylabel('Position','FontSize',12,'Rotation',90);
@@ -23,8 +37,9 @@ plot(1:L,sdslu,'r-'),hold on
 plot(1:L,sdmm,'-'),hold off
 
 
-subplot(2,1,2)
+subplot(4,1,i+2)
 plot(1:L,Wtt);
 xlabel('Time','FontSize',12)
 ylabel('Wealth of pairs trading','FontSize',12,'Rotation',90);
+
 end

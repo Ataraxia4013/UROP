@@ -1,5 +1,5 @@
 %The code incorporate ideas presented in em.m from Higham paper
-%randn('state',100)
+randn('state',100)
 
 clear
 close all
@@ -8,9 +8,10 @@ delta = [1 1 0]';
 a = [-1 0 1]';
 a0 = 0;
 sigma = [0.200 0 0;0.0375 0.1452 0;0.0250 0.0039 0.0967];
-T = 500;
-N = 500;
-gamma = 1;
+T = 1;
+N = 2^17;
+
+gamma = 0.1;
 
 dt = T/N;
 Yzero = transpose([11.10 12.00 11.00]);
@@ -22,7 +23,7 @@ A = diag(a);
 theta = trace(A*omega)/(2*delta'*a);
 
 
-R = 5;
+R = 4;
 Dt = R*dt;
 L = N/R;
 
@@ -82,11 +83,11 @@ loBB = eslomo.AR{1,1};
 loomg2 = eslomo.Covariance;
 losisi = chol(loomg2);
 lobinv = (loBB^(-1));
-losi = lobinv*losisi';
+losi = losisi';
 loomg = losi*losi'/Dt;
 lolol = chol(loomg);
 
-lokpii = lobinv*(eye(3)-loBB)/Dt;
+lokpii = (eye(3)-loBB)/Dt;
 [louk,loek] = eig(lokpii);
 louuk = louk^-1;
 locc = lobinv * eslomo.Constant/ Dt;
@@ -105,8 +106,8 @@ binv = (BB^(-1));
 si = binv*sisi';
 omg = si*si'/Dt;
 lol = chol(omg);
-
-kpii = binv*(eye(3)-BB)/Dt;
+con = esmo.Constant;
+kpii = (eye(3)-BB)/Dt;
 [uk,ek] = eig(kpii);
 uuk = uk^-1;
 
